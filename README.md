@@ -1,6 +1,6 @@
 # writes up war game
 
-##Content:
+## Content:
 
 1. [OverTheWire](#1)
     1.1 [Bandit](#Bandit)
