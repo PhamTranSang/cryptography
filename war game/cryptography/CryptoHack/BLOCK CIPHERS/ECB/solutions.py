@@ -1,13 +1,30 @@
 import requests
+import string
 
-string_sent = 'a'*16
 
-base_URL = 'http://aes.cryptohack.org/ecb_oracle'
+def remote_encrypt(string_sent):
+    string = string_sent.encode().hex()
+    r = requests.get('http://aes.cryptohack.org/ecb_oracle/encrypt/%s' %
+                     string).json()['ciphertext']
+    return r
 
-encrypt_URL = '%s/encrypt/%s' % (base_URL, string_sent)
 
-r = requests.get(encrypt_URL)
+# chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-+{}'
+flag = ''
 
-ciphertext = r.json()['ciphertext']
+for k in range(2):
+    b = ''
+    for i in range(1, 17):
+        string_sent = 'a'*(16-i)
+        cipher = remote_encrypt(string_sent)[:32+k*32]
+        print('string sent: ', string_sent)
+        for c in range(256):
+            tmp = string_sent + flag + b + chr(c)
+            tmp_cipher = remote_encrypt(tmp)[:32+k*32]
 
-print(ciphertext)
+            if tmp_cipher == cipher and chr(c) in string.printable and c != 10 and c != 0:
+                print(chr(c), c)
+                b += chr(c)
+                break
+        flag += b
+print(flag)

@@ -13,6 +13,6 @@ response = session.post(url, data=payload, auth=(username, password))
 
 content = response.text
 
-flag = re.findall('<pre>/etc/natas_webpass/natas10</pre>', content)
+flag = re.findall('<pre>\n/etc/natas_webpass/natas10:(.*?)\n', content)[0]
 
-print(content)
+print(flag)
